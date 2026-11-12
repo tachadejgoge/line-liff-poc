@@ -1,186 +1,302 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#06c755" />
-  <meta name="description" content="LINE LIFF user identity proof of concept - frontend only." />
-  <title>LIFF Identity • POC</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#06C755">
+  <meta name="description" content="A LINE LIFF customer-registration proof of concept. No personal data is submitted or stored.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Customer Registration | LINE POC</title>
   <style>
-    :root { font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; color:#17243a; background:#f5f8fb; font-synthesis:none; }
+    :root { font-family: Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:#1b2939; background:#f4f7f7; font-synthesis:none; }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; padding:34px 16px 56px; }
-    main { width:min(100%,640px); margin:auto; }
-    header { margin-bottom:22px; }
-    .eyebrow { font-size:12px; font-weight:800; letter-spacing:.13em; color:#088348; margin-bottom:8px; }
-    h1 { margin:0; font-size:clamp(26px,6vw,36px); letter-spacing:-.035em; }
-    .subtitle { color:#66758b; margin:8px 0 0; line-height:1.55; font-size:14px; }
-    .panel { background:#fff; border:1px solid #e3e9f0; border-radius:18px; padding:22px; box-shadow:0 6px 28px rgba(19,39,72,.035); margin:14px 0; }
-    .statusline { display:flex; gap:11px; align-items:center; }
-    .dot { height:11px; width:11px; border-radius:50%; flex:0 0 auto; background:#e6a23c; }
-    .dot.success { background:#06c755; }
-    .dot.error { background:#d93d49; }
-    .statusname { font-weight:750; font-size:16px; }
-    .muted { color:#6a778b; font-size:13px; line-height:1.5; }
-    .statusdetail { margin:8px 0 0 22px; overflow-wrap:anywhere; }
-    .profile { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
-    .avatar { width:58px; height:58px; border-radius:50%; background:#eaf7f0; display:grid; place-items:center; font-size:27px; overflow:hidden; flex:0 0 auto; }
-    .avatar img { display:block; width:100%; height:100%; object-fit:cover; }
-    .name { font-size:19px; font-weight:750; line-height:1.3; overflow-wrap:anywhere; }
-    h2 { font-size:16px; margin:0 0 18px; }
-    .field { padding:12px 0; border-top:1px solid #edf1f4; }
-    .fieldlabel { font-size:11px; font-weight:700; letter-spacing:.05em; color:#788598; text-transform:uppercase; }
-    .fieldvalue { font-size:14px; line-height:1.55; overflow-wrap:anywhere; margin:5px 0 8px; font-family:ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
-    .row { display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; }
-    button, .action { border:0; border-radius:10px; padding:12px 15px; font:inherit; font-size:14px; font-weight:700; cursor:pointer; background:#06c755; color:#fff; }
-    button.secondary { color:#1a3445; background:#eaf0f4; }
-    button:disabled { opacity:.55; cursor:not-allowed; }
-    .smallbutton { padding:7px 10px; font-size:12px; background:#e9f7ef; color:#068348; }
-    code { font-size:13px; padding:2px 5px; background:#f1f5f9; border-radius:4px; overflow-wrap:anywhere; }
-    .hint { border-left:3px solid #06c755; padding:9px 0 9px 12px; font-size:13px; line-height:1.7; color:#546479; }
-    .hint strong { color:#263a4d; }
-    ol { padding-left:22px; font-size:14px; line-height:1.9; }
-    .notice { min-height:18px; font-size:13px; color:#078a4d; margin:11px 0 0; }
-    .errorbox { color:#ad2633; background:#fff2f3; border-radius:9px; padding:12px; line-height:1.6; font-size:13px; overflow-wrap:anywhere; display:none; }
-    footer { text-align:center; color:#8c97a6; font-size:12px; margin-top:24px; line-height:1.6; }
-    [hidden] { display:none!important; }
+    body { margin:0; padding:0 16px 32px; min-height:100vh; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { cursor:not-allowed; opacity:.48; }
+    [hidden] { display:none !important; }
+    main { width:min(100%,540px); margin:0 auto; padding-top:27px; }
+    .heading { margin-bottom:20px; }
+    .brandline { display:flex; align-items:center; gap:11px; margin-bottom:22px; }
+    .brand { display:grid; place-items:center; height:42px; width:42px; background:#06c755; border-radius:13px; color:#fff; font-weight:900; letter-spacing:-.06em; font-size:13px; }
+    .brandname { font-size:11px; color:#278b60; font-weight:900; letter-spacing:.13em; text-transform:uppercase; flex:1; }
+    .demo { font-size:11px; font-weight:800; background:#e8f7ed; color:#18723f; padding:6px 10px; border-radius:100px; }
+    h1 { margin:0 0 8px; font-size:clamp(28px,6vw,36px); letter-spacing:-.04em; line-height:1.18; }
+    .intro { font-size:14px; color:#687789; line-height:1.65; margin:0; }
+    .card { background:#fff; border:1px solid #e3e9ed; border-radius:20px; padding:22px; box-shadow:0 8px 28px rgba(28,60,53,.035); margin:16px 0; }
+    .card h2 { font-size:17px; letter-spacing:-.02em; margin:0 0 5px; }
+    .muted { color:#718091; font-size:13px; line-height:1.55; margin:0; }
+    .status { display:flex; align-items:flex-start; gap:10px; border-radius:12px; padding:13px 14px; background:#fff7e9; color:#85560e; line-height:1.5; font-size:13px; margin-bottom:20px; }
+    .status.success { background:#e9f8ee; color:#176c3b; }
+    .status.error { background:#fff1f0; color:#a52d2d; }
+    .dot { flex:0 0 9px; width:9px; height:9px; border-radius:50%; margin-top:5px; background:currentColor; }
+    .status strong { display:block; color:inherit; font-size:13px; }
+    .status span { color:inherit; opacity:.82; }
+    .identity { display:flex; align-items:center; gap:13px; margin-bottom:18px; }
+    .avatar { display:grid; place-items:center; width:56px; height:56px; flex:none; background:#e9f6ef; border-radius:50%; color:#17a25c; font-size:23px; overflow:hidden; }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+    .identity small { display:block; color:#7c8895; font-size:11px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:4px; font-weight:700; }
+    .identity strong { display:block; font-size:17px; overflow-wrap:anywhere; }
+    .label { display:block; font-size:12px; font-weight:800; letter-spacing:.01em; margin-bottom:8px; color:#566576; }
+    .uid { border:1px solid #b8e8cb; border-radius:13px; padding:13px; background:#f1fbf4; }
+    .uidtitle { display:flex; align-items:center; gap:7px; font-size:11px; text-transform:uppercase; color:#277e4c; font-weight:800; letter-spacing:.06em; margin-bottom:8px; }
+    .uidflex { display:flex; align-items:center; gap:9px; }
+    code { font-size:12px; overflow-wrap:anywhere; word-break:break-all; flex:1; color:#155d39; font-family:ui-monospace,Consolas,monospace; }
+    .smallbtn { background:#fff; border:1px solid #b9dac5; padding:8px 10px; border-radius:9px; font-size:12px; font-weight:750; color:#187a43; flex:none; }
+    .help { display:block; color:#768594; line-height:1.5; font-size:12px; margin:8px 0 0; }
+    .divider { height:1px; background:#e9edef; margin:20px 0; }
+    .field { display:block; margin:20px 0 0; }
+    input[type=tel] { width:100%; height:50px; border:1px solid #cbd5df; border-radius:12px; padding:0 15px; background:#fff; color:#1a2d41; outline:none; font-size:16px; }
+    input[type=tel]:focus { border-color:#06c755; box-shadow:0 0 0 3px rgba(6,199,85,.12); }
+    input[type=tel]::placeholder { color:#9aa7b2; }
+    .errorline { min-height:20px; font-size:12px; color:#bd293d; margin:6px 0 0; }
+    .confirm { display:flex; align-items:flex-start; gap:10px; margin:6px 0 20px; font-size:12px; line-height:1.55; color:#637488; cursor:pointer; }
+    .confirm input { margin:2px 0 0; width:17px; height:17px; accent-color:#06c755; flex:none; }
+    .primary { background:#06c755; color:#fff; border:1px solid #06c755; border-radius:12px; min-height:49px; font-size:15px; font-weight:800; padding:12px 16px; }
+    .primary:hover:not(:disabled) { background:#06b64d; }
+    .secondary { background:#fff; color:#245f43; border:1px solid #cce1d5; border-radius:12px; min-height:44px; font-weight:700; padding:10px 14px; font-size:13px; }
+    .full { width:100%; }
+    .fineprint { color:#8793a0; font-size:11px; text-align:center; line-height:1.6; margin:11px 0 0; }
+    .okicon { width:60px; height:60px; display:grid; place-items:center; font-size:32px; color:#fff; background:#06c755; border-radius:50%; margin:0 auto 15px; }
+    .center { text-align:center; }
+    .summary { background:#f5f8f8; border-radius:13px; padding:14px; margin:20px 0; }
+    .summaryline { display:flex; flex-direction:column; gap:3px; margin-bottom:12px; }
+    .summaryline:last-child { margin-bottom:0; }
+    .summaryline span { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#65778a; font-weight:750; }
+    .summaryline strong { font-size:13px; font-weight:650; overflow-wrap:anywhere; }
+    .notice { background:#f0f8f3; border-left:3px solid #06c755; padding:11px 13px; border-radius:3px 9px 9px 3px; line-height:1.55; font-size:12px; color:#416451; }
+    details { margin-top:18px; color:#647688; font-size:12px; }
+    summary { font-size:12px; font-weight:800; cursor:pointer; padding:10px 0; }
+    .debug { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:12px; border-radius:10px; background:#f4f7f8; }
+    .debug span:nth-child(odd) { color:#758397; }
+    .debug span:nth-child(even) { overflow-wrap:anywhere; color:#324357; }
+    .debugbuttons { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    footer { margin:24px 0 10px; text-align:center; font-size:11px; color:#93a0ab; }
+    @media(max-width:390px) { main { padding-top:20px; } .card { padding:18px; border-radius:16px; } h1 { font-size:28px; } }
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
-  <main>
-    <header>
-      <div class="eyebrow">LINE INTEGRATION / POC</div>
-      <h1>LIFF Identity Test</h1>
-      <p class="subtitle">ทดสอบเปิดเว็บจาก Rich Menu แล้วอ่าน LINE User ID ของผู้ใช้ โดยไม่ใช้ Backend หรือ Database</p>
-    </header>
+<main>
+  <header class="heading">
+    <div class="brandline">
+      <div class="brand" aria-label="LINE">LINE</div>
+      <div class="brandname">LINE Integration / POC</div>
+      <span class="demo">DEMO ONLY</span>
+    </div>
+    <h1>Customer Registration</h1>
+    <p class="intro">Connect your LINE account and enter your mobile number to try the registration experience.</p>
+  </header>
 
-    <section class="panel" aria-live="polite">
-      <div class="statusline"><span id="dot" class="dot"></span><span class="statusname" id="status">กำลังเตรียมหน้าเว็บ…</span></div>
-      <p class="muted statusdetail" id="statusDetail">Checking LINE LIFF SDK</p>
-      <div id="error" class="errorbox" role="alert"></div>
-    </section>
-
-    <section class="panel" id="setup" hidden>
-      <h2>ตั้งค่า LIFF ID ก่อนเริ่มใช้งาน</h2>
-      <ol>
-        <li>เปิดใช้ GitHub Pages และนำ HTTPS URL นี้ไปสร้าง LIFF App ใน LINE Developers</li>
-        <li>เปิดไฟล์ <code>index.html</code> ใน GitHub แล้วแทนค่า <code>PASTE_LIFF_ID_HERE</code> ด้วย LIFF ID จริง</li>
-        <li>กดเปิดผ่าน LIFF URL <code>https://liff.line.me/{LIFF_ID}</code> จาก Rich Menu</li>
-      </ol>
-      <p class="muted">LIFF ID เป็น public identifier ใส่ในโค้ดหน้าเว็บได้ ไม่ต้องใส่ Channel Secret หรือ Access Token</p>
-    </section>
-
-    <section class="panel" id="result" hidden>
-      <div class="profile">
-        <div id="avatar" class="avatar">👤</div>
-        <div><div class="fieldlabel">SIGNED-IN LINE ACCOUNT</div><div class="name" id="displayName">-</div></div>
+  <section class="card" aria-label="LINE account">
+    <div id="status" class="status" role="status" aria-live="polite">
+      <i class="dot" aria-hidden="true"></i>
+      <div><strong id="statusTitle">Connecting to LINE…</strong><span id="statusDetail">Please keep this window open.</span></div>
+    </div>
+    <div class="identity">
+      <div id="avatar" class="avatar" aria-label="LINE profile picture">👤</div>
+      <div><small>LINE Display Name</small><strong id="displayName">Waiting for LINE…</strong></div>
+    </div>
+    <div class="uid">
+      <div class="uidtitle">✓ LINE User ID — Retrieved from LINE</div>
+      <div class="uidflex">
+        <code id="userId">Waiting for LINE login…</code>
+        <button type="button" class="smallbtn" id="copyId" disabled>Copy</button>
       </div>
-      <div class="field">
-        <div class="fieldlabel">LINE USER ID</div>
-        <div class="fieldvalue" id="userId">-</div>
-        <button id="copyId" class="smallbutton" type="button">Copy User ID</button>
+      <span class="help">Your LINE User ID is automatically retrieved after sign-in. It is not your phone number or LIFF ID.</span>
+    </div>
+    <div id="loginPanel" hidden>
+      <div class="divider"></div>
+      <p class="muted" style="margin-bottom:12px">Sign in with LINE to read your profile and continue.</p>
+      <button type="button" id="login" class="primary full">Log in with LINE</button>
+    </div>
+  </section>
+
+  <section class="card" id="registrationCard">
+    <h2>Your mobile number</h2>
+    <p class="muted">Complete this simple demo form. No OTP or actual registration is performed.</p>
+    <form id="registrationForm" novalidate>
+      <label for="mobile" class="label field">Mobile Phone Number <span aria-hidden="true">*</span></label>
+      <input id="mobile" type="tel" name="mobile" inputmode="tel" autocomplete="tel-national" placeholder="e.g. 0812345678" maxlength="20" required disabled>
+      <p id="phoneError" class="errorline" role="alert"></p>
+      <label class="confirm" for="ack">
+        <input type="checkbox" id="ack" required disabled>
+        <span>I understand this is a demonstration. My phone number will not be submitted, saved, or verified.</span>
+      </label>
+      <button class="primary full" id="register" type="submit" disabled>Register</button>
+      <p class="fineprint">POC only · No backend · No database · No SMS</p>
+    </form>
+  </section>
+
+  <section class="card" id="successCard" hidden aria-live="polite">
+    <div class="okicon">✓</div>
+    <h2 class="center" style="font-size:22px">Registration Successful!</h2>
+    <p class="muted center">This is a demo confirmation. No information has been submitted or saved.</p>
+    <div class="summary">
+      <div class="summaryline"><span>LINE Display Name</span><strong id="successName">—</strong></div>
+      <div class="summaryline"><span>LINE User ID</span><strong id="successUserId">—</strong></div>
+      <div class="summaryline"><span>Mobile Phone Number</span><strong id="successPhone">—</strong></div>
+    </div>
+    <p class="notice">Demo completed successfully. The mobile number was entered by you and has not been verified.</p>
+    <button type="button" class="secondary full" id="again" style="margin-top:17px">Try Again</button>
+  </section>
+
+  <section class="card">
+    <h2>Privacy & test information</h2>
+    <p class="muted">This demo shows LINE profile details only on your screen. It does not send your profile or entered phone number to a server. Do not use this POC for real customer registration.</p>
+    <details>
+      <summary>Developer Debug Info</summary>
+      <div class="debug">
+        <span>LIFF ID</span><span id="debugLiffId">—</span>
+        <span>Environment</span><span id="environment">—</span>
+        <span>Context</span><span id="context">—</span>
+        <span>OA Friendship</span><span id="friendship">Not checked</span>
       </div>
-      <div class="field"><div class="fieldlabel">LIFF ID</div><div class="fieldvalue" id="liffId">-</div></div>
-      <div class="field"><div class="fieldlabel">ENVIRONMENT</div><div class="fieldvalue" id="environment">-</div></div>
-      <div class="field"><div class="fieldlabel">CONTEXT / SOURCE</div><div class="fieldvalue" id="context">-</div></div>
-      <div class="field"><div class="fieldlabel">OFFICIAL ACCOUNT FRIENDSHIP</div><div class="fieldvalue" id="friendship">ยังไม่ได้ตรวจ</div><button class="smallbutton" id="checkFriendship" type="button">Check Friendship</button></div>
-      <div class="row">
-        <button id="refresh" type="button">Refresh Profile</button>
-        <button id="logout" class="secondary" type="button">Log out</button>
-        <button id="close" class="secondary" type="button" hidden>Close LIFF</button>
+      <div class="debugbuttons">
+        <button class="secondary" id="checkFriendship" type="button" disabled>Check Friendship</button>
+        <button class="secondary" id="refresh" type="button" disabled>Refresh Profile</button>
+        <button class="secondary" id="logout" type="button" hidden>Log out</button>
+        <button class="secondary" id="close" type="button" hidden>Close LIFF</button>
       </div>
-      <p id="notice" class="notice" role="status"></p>
-    </section>
+    </details>
+  </section>
+  <footer>LINE LIFF Customer Registration POC · Static GitHub Pages</footer>
+</main>
 
-    <section class="panel" id="loginPanel" hidden>
-      <h2>เข้าสู่ระบบ LINE เพื่อทดสอบ</h2>
-      <p class="muted">ใน LINE App จะล็อกอินผ่าน LIFF ตามปกติ ส่วนเบราว์เซอร์ภายนอกอาจต้องกดปุ่มนี้ก่อน</p>
-      <button type="button" id="login">Login with LINE</button>
-    </section>
+<script>
+  "use strict";
+  const LIFF_ID = "2012563674-gKXqVn9b";
+  const byId = (id) => document.getElementById(id);
+  const put = (id, value) => { byId(id).textContent = value == null ? "—" : String(value); };
+  let profile = null;
 
-    <section class="panel">
-      <p class="hint"><strong>Privacy:</strong> แสดง User ID และข้อมูลโปรไฟล์เฉพาะในเบราว์เซอร์ของผู้ใช้เท่านั้น ไม่มีการส่งข้อมูลไปเก็บในเซิร์ฟเวอร์ และไม่แสดง Token</p>
-      <p class="muted">หมายเหตุ: LINE User ID เป็นรหัสของผู้ใช้ ไม่ใช่ LIFF ID และอาจแตกต่างกันเมื่อใช้คนละ Provider</p>
-    </section>
-    <footer>Static GitHub Pages POC • No backend • No analytics</footer>
-  </main>
+  function setStatus(title, description, state) {
+    put("statusTitle", title);
+    put("statusDetail", description);
+    byId("status").className = "status" + (state ? " " + state : "");
+  }
 
-  <script>
-    // REQUIRED: Paste the LIFF ID created in LINE Developers here.
-    // Never paste a Channel Secret, channel access token, or user token.
-    const LIFF_ID = "2012563674-gKXqVn9b";
+  function setReady(ready) {
+    ["mobile", "ack", "register", "copyId", "refresh", "checkFriendship"].forEach((id) => { byId(id).disabled = !ready; });
+    byId("logout").hidden = !ready || liff.isInClient();
+    byId("close").hidden = !ready || !liff.isInClient();
+  }
 
-    const byId = (id) => document.getElementById(id);
-    const setText = (id, value) => { byId(id).textContent = value == null ? "-" : String(value); };
-    const setStatus = (label, detail, type = "pending") => {
-      setText("status", label);
-      setText("statusDetail", detail);
-      byId("dot").className = "dot" + (type === "success" ? " success" : type === "error" ? " error" : "");
-    };
-    const fail = (err) => {
-      const message = err && err.message ? err.message : String(err);
-      setStatus("เกิดข้อผิดพลาด", "ตรวจสอบการตั้งค่า LIFF และสิทธิ์ Scope", "error");
-      byId("error").style.display = "block";
-      setText("error", message);
-    };
-    async function loadProfile() {
-      setStatus("กำลังอ่านข้อมูลโปรไฟล์", "Using liff.getProfile()…");
-      const profile = await liff.getProfile();
-      setText("displayName", profile.displayName || "(no display name)");
-      setText("userId", profile.userId);
-      setText("liffId", LIFF_ID);
-      setText("environment", `${liff.isInClient() ? "LINE in-app LIFF" : "External browser"} • ${liff.getOS()} • LIFF SDK ${liff.getVersion()}`);
-      const context = liff.getContext();
-      setText("context", context ? `type: ${context.type || "unknown"} • view: ${context.viewType || "unknown"} • utouId: ${context.utouId || "n/a"}` : "No context");
-      const avatar = byId("avatar");
-      avatar.replaceChildren();
-      if (profile.pictureUrl && /^https:\/\//.test(profile.pictureUrl)) {
-        const img = document.createElement("img");
-        img.src = profile.pictureUrl;
-        img.alt = "LINE profile picture";
-        img.referrerPolicy = "no-referrer";
-        avatar.appendChild(img);
-      } else { avatar.textContent = "👤"; }
-      byId("result").hidden = false;
-      byId("loginPanel").hidden = true;
-      byId("close").hidden = !liff.isInClient();
-      setStatus("เชื่อมต่อ LINE สำเร็จ", "อ่าน LINE User ID ได้แล้ว", "success");
+  function handleError(error) {
+    const message = error && error.message ? error.message : String(error);
+    setStatus("LINE connection failed", "Please check your LIFF channel status, permissions and endpoint. " + message, "error");
+    put("userId", "Unavailable — LINE sign-in required");
+    if (!profile) byId("displayName").textContent = "Not connected";
+  }
+
+  async function loadProfile() {
+    const result = await liff.getProfile();
+    if (!result || !result.userId) throw new Error("LINE did not return a User ID.");
+    profile = result;
+    put("displayName", result.displayName || "LINE user");
+    put("userId", result.userId);
+    const avatar = byId("avatar");
+    avatar.replaceChildren();
+    if (result.pictureUrl && /^https:\/\//.test(result.pictureUrl)) {
+      const pic = document.createElement("img");
+      pic.src = result.pictureUrl;
+      pic.alt = "LINE profile picture";
+      pic.referrerPolicy = "no-referrer";
+      avatar.appendChild(pic);
+    } else {
+      avatar.textContent = "👤";
     }
-    async function boot() {
-      if (!window.liff) return fail(new Error("LIFF SDK โหลดไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต"));
-      if (!LIFF_ID || LIFF_ID === "PASTE_LIFF_ID_HERE") {
-        byId("setup").hidden = false;
-        setStatus("รอตั้งค่า LIFF ID", "เว็บพร้อมแล้ว แต่ยังไม่ได้ผูก LIFF App", "pending");
+    put("environment", (liff.isInClient() ? "LINE in-app browser" : "External browser") + " · " + liff.getOS());
+    const ctx = liff.getContext();
+    put("context", ctx && ctx.type ? ctx.type : "Unknown");
+    byId("loginPanel").hidden = true;
+    setReady(true);
+    setStatus("LINE Account Connected", "Your LINE User ID was retrieved successfully.", "success");
+  }
+
+  async function boot() {
+    put("debugLiffId", LIFF_ID);
+    if (!window.liff) return handleError(new Error("The LINE SDK could not load."));
+    try {
+      await liff.init({ liffId: LIFF_ID });
+      put("environment", (liff.isInClient() ? "LINE in-app browser" : "External browser") + " · " + liff.getOS());
+      const ctx = liff.getContext();
+      put("context", ctx && ctx.type ? ctx.type : "Unknown");
+      if (!liff.isLoggedIn()) {
+        byId("loginPanel").hidden = false;
+        setStatus("LINE Login Required", "Please log in to continue with your registration demo.", "");
+        put("displayName", "Not connected");
+        put("userId", "Sign in to retrieve User ID");
         return;
       }
-      try {
-        setStatus("กำลังเชื่อมต่อ LINE", `Initializing LIFF ${LIFF_ID}…`);
-        // Keep liff.* redirect query parameters intact until liff.init resolves.
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-          byId("loginPanel").hidden = false;
-          setStatus("รอ LINE Login", "กด Login with LINE เพื่ออ่าน User ID", "pending");
-          return;
-        }
-        await loadProfile();
-      } catch (err) { fail(err); }
+      await loadProfile();
+    } catch (error) { handleError(error); }
+  }
+
+  byId("login").addEventListener("click", () => {
+    try { liff.login({ redirectUri: window.location.href.split("#")[0] }); }
+    catch (error) { handleError(error); }
+  });
+  byId("registrationForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    put("phoneError", "");
+    if (!profile || !profile.userId) {
+      put("phoneError", "Please connect your LINE account first.");
+      return;
     }
-    byId("login").addEventListener("click", () => { try { liff.login(); } catch (e) { fail(e); } });
-    byId("refresh").addEventListener("click", async () => { try { await loadProfile(); } catch (e) { fail(e); } });
-    byId("copyId").addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(byId("userId").textContent); setText("notice", "คัดลอก User ID แล้ว"); }
-      catch { setText("notice", "คัดลอกไม่ได้ ลองเลือกข้อความแล้ว Copy เอง"); }
-    });
-    byId("checkFriendship").addEventListener("click", async () => {
-      try {
-        const { friendFlag } = await liff.getFriendship();
-        setText("friendship", friendFlag ? "เป็นเพื่อนกับ OA แล้ว" : "ยังไม่เป็นเพื่อนกับ OA");
-      } catch (e) { setText("friendship", `ตรวจไม่ได้: ${e.message || e}`); }
-    });
-    byId("logout").addEventListener("click", () => { liff.logout(); location.reload(); });
-    byId("close").addEventListener("click", () => { liff.closeWindow(); });
-    boot();
-  </script>
+    const entered = byId("mobile").value.trim().replace(/[\s\-()]/g, "");
+    // This POC accepts Thai domestic mobile numbers or their +66 equivalent.
+    const domestic = /^\+66[689]\d{8}$/.test(entered) ? "0" + entered.slice(3) : entered;
+    if (!/^0[689]\d{8}$/.test(domestic)) {
+      put("phoneError", "Please enter a valid 10-digit Thai mobile number (e.g. 0812345678).");
+      byId("mobile").focus();
+      return;
+    }
+    if (!byId("ack").checked) {
+      put("phoneError", "Please confirm that you understand this is a demo.");
+      byId("ack").focus();
+      return;
+    }
+    put("successName", profile.displayName || "LINE user");
+    put("successUserId", profile.userId);
+    put("successPhone", domestic);
+    byId("registrationCard").hidden = true;
+    byId("successCard").hidden = false;
+    byId("successCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  byId("again").addEventListener("click", () => {
+    byId("registrationForm").reset();
+    put("phoneError", "");
+    byId("successCard").hidden = true;
+    byId("registrationCard").hidden = false;
+    byId("registrationCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  byId("copyId").addEventListener("click", async () => {
+    if (!profile) return;
+    try {
+      await navigator.clipboard.writeText(profile.userId);
+      const b = byId("copyId"); b.textContent = "Copied!";
+      b.setAttribute("aria-label", "LINE User ID copied");
+    } catch {
+      byId("copyId").textContent = "Select ID";
+    }
+  });
+  byId("checkFriendship").addEventListener("click", async () => {
+    try {
+      const result = await liff.getFriendship();
+      put("friendship", result.friendFlag ? "Following linked LINE OA" : "Not following linked LINE OA");
+    } catch (error) {
+      put("friendship", "Unavailable: " + (error.message || String(error)));
+    }
+  });
+  byId("refresh").addEventListener("click", async () => {
+    try { await loadProfile(); }
+    catch (error) { handleError(error); }
+  });
+  byId("logout").addEventListener("click", () => { if (window.liff) { liff.logout(); window.location.reload(); } });
+  byId("close").addEventListener("click", () => { if (window.liff && liff.isInClient()) liff.closeWindow(); });
+
+  boot();
+</script>
 </body>
 </html>
